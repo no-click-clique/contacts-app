@@ -1,7 +1,15 @@
 class Api::ContactsController < ApplicationController
 
   def index
-    @contacts = Contact.all
+    @contacts = Contact.all #array of contact hashes
+
+    if params[:search]
+      @contacts = @contacts.where("first_name iLIKE ? OR last_name iLIKE ? OR middle_name iLIKE ? OR email iLIKE ?", "#{params[:search]}", "#{params[:search]}", "#{params[:search]}", "#{params[:search]}")
+    end
+
+    # order by id as a default
+    @contacts = @contacts.order(:id) 
+
     render 'index.json.jb'
   end
 
@@ -24,7 +32,7 @@ class Api::ContactsController < ApplicationController
   end
 
   def show
-    @contact = Contact.find(params[:id])
+    @contact = Contact.find(params[:id]) #hash of contact data
     render 'show.json.jb'
   end
 
